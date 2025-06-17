@@ -80,16 +80,16 @@ def extract_matrices(grid, n):
             if not visited[nr][nc] and grid[nr][nc] != 0:
                 matrix.append(bfs(i,j))
 
-    def reconstruct_chain(matrices):
+    def reconstruct_chain(matrix):
         # 연결 사슬을 만들어서 올바른 순서로 정렬
-        info_dict = {r: c for r, c in matrices}
+        info_dict = {r: c for r, c in matrix}
         keys = set(info_dict.keys())
         values = set(info_dict.values())
 
         start = (keys - values).pop()
         sorted_matrices = []
 
-        while len(sorted_matrices) < len(matrices):
+        while len(sorted_matrices) < len(matrix):
             sorted_matrices.append((start, info_dict[start]))
             start = info_dict[start]
 
@@ -117,8 +117,8 @@ for test_case in range(1, T + 1):
     n = int(input())
     grid = [list(map(int, input().split())) for _ in range(n)]
 
-    matrices = extract_matrices_dfs(grid, n)
-    sorted_matrices = reconstruct_chain(matrices)
+    matrix = extract_matrices_dfs(grid, n)
+    sorted_matrices = reconstruct_chain(matrix)
     result = matrix_chain_order(sorted_matrices)
 
     print(f"#{test_case} {result}")
