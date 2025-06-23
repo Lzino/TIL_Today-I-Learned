@@ -58,6 +58,11 @@ def reconstruct_chain(matrices):
 
     # 시작점 찾기: 다른 노드가 가리키지 않는 노드 (맨 처음에 오는 행 크기)
     start = (keys - values).pop()
+    '''
+    keys = set(info_dict.keys())     # 시작노드만 모은 것 → {'a', 'b', 'c'}
+    values = set(info_dict.values()) # 끝노드 모은 것   → {'b', 'c', 'd'}
+    start = (keys - values).pop()    # 시작노드 → 'a'
+    '''
 
     sorted_matrices = []  # 정렬된 순서의 (행, 열) 리스트
 
@@ -83,12 +88,15 @@ def matrix_chain_order(matrices):
             j = i + length - 1
             dp[i][j] = float('inf')  # 최소값을 찾기 위해 초기값 무한대로 설정
             for k in range(i, j):
-                # 분할 지점 k를 기준으로 좌/우 영역 비용 + 곱셈 비용 계산
-                cost = (
-                    dp[i][k] +
-                    dp[k + 1][j] +
-                    dims[i] * dims[k + 1] * dims[j + 1]
-                )
+                '''
+                분할 지점 k를 기준으로 좌/우 영역 비용 + 곱셈 비용 계산
+                예시 (AB)C 
+                - dp[i][k] = (AB)의 계산
+                - dp[k + 1][j] = C의 계산
+                - dims[i] * dims[k + 1] * dims[j + 1] = (AB)C의 전체 계
+                '''
+                cost = (dp[i][k] + dp[k + 1][j] +
+                    dims[i] * dims[k + 1] * dims[j + 1])
                 dp[i][j] = min(dp[i][j], cost)  # 최소값 갱신
 
     return dp[0][n - 1]  # 전체 곱셈 최소 연산 수 반환
