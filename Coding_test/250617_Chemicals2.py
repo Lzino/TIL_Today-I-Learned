@@ -52,6 +52,7 @@ def extract_matrices_dfs(grid, n):
 
 def reconstruct_chain(matrices):
     # 각 matrix를 (행, 열) 쌍으로 생각하고 연결 사슬 형태로 정렬
+    # ABC 행렬곱이라고 했을때 어떤 행렬이 A번째 행렬이고 어떤 행렬이 B번째 행렬이 될지 순서를 정해주는 함수 
     info_dict = {r: c for r, c in matrices}  # 행 → 열 매핑
     keys = set(info_dict.keys())            # 시작 노드들
     values = set(info_dict.values())        # 끝 노드들
