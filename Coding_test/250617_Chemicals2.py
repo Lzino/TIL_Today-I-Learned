@@ -119,3 +119,294 @@ for test_case in range(1, T + 1):
 
     print(f"#{test_case} {result}")  # 결과 출력
 
+'''
+# ======== C ++ 버전 ======== 
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <set>
+#include <map>
+#include <climits>
+using namespace std;
+
+int n;
+vector<vector<int>> grid;
+vector<vector<bool>> visited;
+vector<pair<int, int>> matrices;
+
+// 방향 벡터 (상, 하, 좌, 우)
+int dr[4] = {1, -1, 0, 0};
+int dc[4] = {0, 0, 1, -1};
+
+// DFS로 하나의 submatrix 영역을 찾는다
+void dfs(int r, int c, vector<pair<int, int>>& cells) {
+    visited[r][c] = true;
+    cells.push_back({r, c});
+
+    for (int d = 0; d < 4; d++) {
+        int nr = r + dr[d];
+        int nc = c + dc[d];
+        if (nr >= 0 && nr < n && nc >= 0 && nc < n) {
+            if (!visited[nr][nc] && grid[nr][nc] != 0) {
+                dfs(nr, nc, cells);
+            }
+        }
+    }
+}
+
+// 1. submatrix 추출
+void extract_matrices_dfs() {
+    visited.assign(n, vector<bool>(n, false));
+    matrices.clear();
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (grid[i][j] != 0 && !visited[i][j]) {
+                vector<pair<int, int>> cells;
+                dfs(i, j, cells);
+
+                int min_r = n, max_r = 0, min_c = n, max_c = 0;
+                for (auto cell : cells) {
+                    min_r = min(min_r, cell.first);
+                    max_r = max(max_r, cell.first);
+                    min_c = min(min_c, cell.second);
+                    max_c = max(max_c, cell.second);
+                }
+
+                int height = max_r - min_r + 1;
+                int width = max_c - min_c + 1;
+                matrices.push_back({height, width});
+            }
+        }
+    }
+}
+
+// 2. 연결 사슬 정렬
+vector<pair<int, int>> reconstruct_chain(const vector<pair<int, int>>& matrices) {
+    map<int, int> info_map;
+    set<int> keys, values;
+
+    for (auto p : matrices) {
+        info_map[p.first] = p.second;
+        keys.insert(p.first);
+        values.insert(p.second);
+    }
+
+    // 시작점: keys - values
+    int start;
+    for (int k : keys) {
+        if (values.count(k) == 0) {
+            start = k;
+            break;
+        }
+    }
+
+    vector<pair<int, int>> sorted_matrices;
+    while (sorted_matrices.size() < matrices.size()) {
+        int next = info_map[start];
+        sorted_matrices.push_back({start, next});
+        start = next;
+    }
+
+    return sorted_matrices;
+}
+
+// 3. 행렬 곱 최소 연산 계산 (DP)
+int matrix_chain_order(const vector<pair<int, int>>& matrices) {
+    int n = matrices.size();
+    vector<vector<int>> dp(n, vector<int>(n, 0));
+    vector<int> dims(n + 1);
+
+    dims[0] = matrices[0].first;
+    for (int i = 0; i < n; i++) {
+        dims[i + 1] = matrices[i].second;
+    }
+
+    for (int length = 2; length <= n; length++) {
+        for (int i = 0; i <= n - length; i++) {
+            int j = i + length - 1;
+            dp[i][j] = INT_MAX;
+
+            for (int k = i; k < j; k++) {
+                int cost = dp[i][k] + dp[k + 1][j]
+                         + dims[i] * dims[k + 1] * dims[j + 1];
+                dp[i][j] = min(dp[i][j], cost);
+            }
+        }
+    }
+
+    return dp[0][n - 1];
+}
+
+// ========================
+// 메인 함수
+// ========================
+int main() {
+    int T;
+    cin >> T;
+    for (int test_case = 1; test_case <= T; test_case++) {
+        cin >> n;
+        grid.assign(n, vector<int>(n));
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                cin >> grid[i][j];
+            }
+        }
+
+        extract_matrices_dfs(); // 1. submatrix 추출
+        auto sorted_matrices = reconstruct_chain(matrices); // 2. 정렬
+        int result = matrix_chain_order(sorted_matrices); // 3. DP로 최소 곱셈
+
+        cout << "#" << test_case << " " << result << endl;
+    }
+
+    return 0;
+}
+'''
+'''
+# ======== JAVA 버전 ======== 
+import java.util.*;
+
+public class MatrixChainSolver {
+    static int n;
+    static int[][] grid;
+    static boolean[][] visited;
+    static List<int[]> matrices = new ArrayList<>();
+
+    // 방향 벡터: 상, 하, 좌, 우
+    static int[] dr = {1, -1, 0, 0};
+    static int[] dc = {0, 0, 1, -1};
+
+    // DFS로 하나의 submatrix 영역 탐색
+    static void dfs(int r, int c, List<int[]> cells) {
+        visited[r][c] = true;
+        cells.add(new int[]{r, c});
+
+        for (int d = 0; d < 4; d++) {
+            int nr = r + dr[d];
+            int nc = c + dc[d];
+
+            if (nr >= 0 && nr < n && nc >= 0 && nc < n) {
+                if (!visited[nr][nc] && grid[nr][nc] != 0) {
+                    dfs(nr, nc, cells);
+                }
+            }
+        }
+    }
+
+    // 1. DFS로 submatrix 추출
+    static void extractMatricesDFS() {
+        visited = new boolean[n][n];
+        matrices.clear();
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] != 0 && !visited[i][j]) {
+                    List<int[]> cells = new ArrayList<>();
+                    dfs(i, j, cells);
+
+                    int minR = n, maxR = 0, minC = n, maxC = 0;
+                    for (int[] cell : cells) {
+                        minR = Math.min(minR, cell[0]);
+                        maxR = Math.max(maxR, cell[0]);
+                        minC = Math.min(minC, cell[1]);
+                        maxC = Math.max(maxC, cell[1]);
+                    }
+
+                    int height = maxR - minR + 1;
+                    int width = maxC - minC + 1;
+                    matrices.add(new int[]{height, width});
+                }
+            }
+        }
+    }
+
+    // 2. from → to 사슬 구조로 정렬
+    static List<int[]> reconstructChain(List<int[]> matrices) {
+        Map<Integer, Integer> infoMap = new HashMap<>();
+        Set<Integer> keys = new HashSet<>();
+        Set<Integer> values = new HashSet<>();
+
+        for (int[] mat : matrices) {
+            infoMap.put(mat[0], mat[1]);
+            keys.add(mat[0]);
+            values.add(mat[1]);
+        }
+
+        // 시작점 찾기: keys - values
+        int start = -1;
+        for (int k : keys) {
+            if (!values.contains(k)) {
+                start = k;
+                break;
+            }
+        }
+
+        List<int[]> sorted = new ArrayList<>();
+        while (sorted.size() < matrices.size()) {
+            int next = infoMap.get(start);
+            sorted.add(new int[]{start, next});
+            start = next;
+        }
+
+        return sorted;
+    }
+
+    // 3. DP로 최소 행렬 곱 계산
+    static int matrixChainOrder(List<int[]> matrices) {
+        int size = matrices.size();
+        int[][] dp = new int[size][size];
+        int[] dims = new int[size + 1];
+
+        dims[0] = matrices.get(0)[0];
+        for (int i = 0; i < size; i++) {
+            dims[i + 1] = matrices.get(i)[1];
+        }
+
+        for (int length = 2; length <= size; length++) {
+            for (int i = 0; i <= size - length; i++) {
+                int j = i + length - 1;
+                dp[i][j] = Integer.MAX_VALUE;
+
+                for (int k = i; k < j; k++) {
+                    int cost = dp[i][k] + dp[k + 1][j] +
+                            dims[i] * dims[k + 1] * dims[j + 1];
+                    dp[i][j] = Math.min(dp[i][j], cost);
+                }
+            }
+        }
+
+        return dp[0][size - 1];
+    }
+
+    // ========================
+    // Main 메서드
+    // ========================
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int T = Integer.parseInt(sc.nextLine());
+
+        for (int testCase = 1; testCase <= T; testCase++) {
+            n = Integer.parseInt(sc.nextLine());
+            grid = new int[n][n];
+
+            for (int i = 0; i < n; i++) {
+                String[] tokens = sc.nextLine().split(" ");
+                for (int j = 0; j < n; j++) {
+                    grid[i][j] = Integer.parseInt(tokens[j]);
+                }
+            }
+
+            extractMatricesDFS();                          // 1. submatrix 추출
+            List<int[]> sortedMatrices = reconstructChain(matrices);  // 2. 정렬
+            int result = matrixChainOrder(sortedMatrices);            // 3. 최소 곱셈 연산
+
+            System.out.println("#" + testCase + " " + result);
+        }
+
+        sc.close();
+    }
+}
+
+'''
+
