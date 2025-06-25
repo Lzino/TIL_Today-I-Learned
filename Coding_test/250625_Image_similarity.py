@@ -8,6 +8,7 @@ def lcs_similarity(x: str, y: str) -> float:
         for j in range(1, n + 1):      # Y의 j번째 문자까지
             if x[i - 1] == y[j - 1]:   # 글자가 일치하면
                 # DP에 반영. X,Y는 0부터 시작하지만 DP는 숫자 그대로 사용
+                # 이전 단계 값 + 1
                 dp[i][j] = dp[i - 1][j - 1] + 1  
             else:
                 # 불일치하면 X 이전 단계나 Y 이전 단계 중 큰 걸 반영
