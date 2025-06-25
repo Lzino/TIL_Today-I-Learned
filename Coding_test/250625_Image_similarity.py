@@ -11,7 +11,7 @@ def lcs_similarity(x: str, y: str) -> float:
             if x[i - 1] == y[j - 1]:
                 curr[j] = prev[j - 1] + 1
             else:
-                curr[j] = prev[j] if prev[j] > curr[j - 1] else curr[j - 1]
+                curr[j] = max(prev[j], curr[j-1])
         prev, curr = curr, [0] * (n + 1)   # 다음 행 준비
 
     return prev[n] * 100.0 / n             # LCS 길이 / 전체길이 * 100
