@@ -1,28 +1,26 @@
-# https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AV18Q_MqIvUCFAZN
-
 def lcs_similarity(x: str, y: str) -> float:
     n = len(x)
-    # 메모리를 줄이기 위해 행 2개만 사용
-    prev = [0] * (n + 1)   # dp[i-1][*]
-    curr = [0] * (n + 1)   # dp[i][*]
+    # (n+1) × (n+1) DP 테이블 0으로 초기화
+    dp = [[0] * (n + 1) for _ in range(n + 1)]
 
-    for i in range(1, n + 1):
-        for j in range(1, n + 1):
-            if x[i - 1] == y[j - 1]:
-                curr[j] = prev[j - 1] + 1
-            else:
-                curr[j] = max(prev[j], curr[j-1])
-        prev, curr = curr, [0] * (n + 1)   # 다음 행 준비
+    # 표 채우기
+    for i in range(1, n + 1):          # X의 i번째 문자까지
+        for j in range(1, n + 1):      # Y의 j번째 문자까지
+            if x[i - 1] == y[j - 1]:   # 글자 일치(↖)
+                dp[i][j] = dp[i - 1][j - 1] + 1
+            else:                      # 글자 불일치(↑, ← 중 큰 값)
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
 
-    return prev[n] * 100.0 / n             # LCS 길이 / 전체길이 * 100
+    # LCS 길이 → 유사도(%) 계산
+    return dp[n][n] * 100.0 / n
 
 
+# ---------------- 실행부 ----------------
 T = int(input())
 for tc in range(1, T + 1):
-    N = int(input())           # 문자열 길이 (문제 보장: X, Y 모두 N글자)
+    N = int(input())
     X = input().strip()
     Y = input().strip()
 
     similarity = lcs_similarity(X, Y)
-    # 소수점 둘째 자리까지 출력
     print(f"#{tc} {similarity:.2f}")
