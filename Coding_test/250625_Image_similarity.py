@@ -1,3 +1,4 @@
+# https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AV18Q_MqIvUCFAZN
 def lcs_similarity(x: str, y: str) -> float:
     n = len(x)
     # (n+1) × (n+1) DP 테이블 0으로 초기화
