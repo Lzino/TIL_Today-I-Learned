@@ -48,7 +48,12 @@ for tc in range(1, T + 1):
     raw = raw[1:]          # 나머지는 인접행렬 요소 N²개
 
     # ── 2. 1차원 → 2차원 인접행렬로 변환 ─────────────
-    graph = [raw[i*N : (i+1)*N] for i in range(N)]
+    graph = []          # 최종 2차원 인접행렬
+    index = 0           # raw 리스트에서 현재 읽을 위치
+    for _ in range(N):          # N개의 행을 만든다
+       row = raw[index:index+N]   # N개씩 잘라서 한 행(row) 생성
+       graph.append(row)          # 행을 그래프에 추가
+       index += N                 # 다음 행의 시작 위치로 이동
 
     # ── 3. 모든 쌍 최단거리 계산 ────────────────────
     floyd_warshall(graph, N)
