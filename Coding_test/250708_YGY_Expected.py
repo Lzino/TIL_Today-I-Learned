@@ -86,4 +86,6 @@ Output:
 ## https://leetcode.com/problems/minimum-deletions-to-make-character-frequencies-unique/
 ## https://leetcode.com/problems/valid-palindrome-ii/description/
 ## https://leetcode.com/problems/delete-characters-to-make-fancy-string/description/
+## https://leetcode.com/problems/minimum-changes-to-make-alternating-binary-string/description/
+## https://leetcode.com/problems/reorganize-string/description/?utm_source=chatgpt.com
 
