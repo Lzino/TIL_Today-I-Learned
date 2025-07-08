@@ -83,51 +83,7 @@ Output:
 
 힌트 : 맞춤 자료구조 설계 + DP/그리디 + 조건 만족 최소수정
 '''
-
-from collections import Counter
-
-def min_flips(s, K):
-    cnt = Counter()
-    prev = ''
-    flips = 0
-    result = []
-
-    for ch in s:
-        cur = ch
-
-        # 조건 1: 인접 중복 방지
-        if cur == prev:
-            for repl in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
-                if repl != prev:
-                    cur = repl
-                    flips += 1
-                    break
-
-        # 문자 추가
-        cnt[cur] += 1
-        result.append(cur)
-
-        # 조건 2: 접두사 불균형 검사
-        max_cnt = max(cnt.values())
-        min_cnt = min(cnt.values())
-        if max_cnt - min_cnt > K:
-            cnt[cur] -= 1  # 빼고
-            for repl in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
-                if repl != prev:
-                    cnt[repl] += 1
-                    flips += 1
-                    result[-1] = repl
-                    cur = repl
-                    break
-
-        prev = cur  # 다음 루프를 위해 갱신
-
-    return flips
-
-# 실행 예시
-if __name__ == "__main__":
-    import sys
-    S = sys.stdin.readline().strip()
-    K = int(sys.stdin.readline())
-    print(min_flips(S, K))
+## https://leetcode.com/problems/minimum-deletions-to-make-character-frequencies-unique/
+## https://leetcode.com/problems/valid-palindrome-ii/description/
+## https://leetcode.com/problems/delete-characters-to-make-fancy-string/description/
 
