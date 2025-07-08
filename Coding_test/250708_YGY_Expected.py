@@ -96,6 +96,13 @@ Output:
 
 힌트 : 맞춤 자료구조 설계 + DP/그리디 + 조건 만족 최소수정
 '''
+
+
+
+'''
+동일한 빈도를 가진 두 개의 다른 문자가 없는 경우 좋은 문자열
+> 문자열 s가 주어지면 삭제해야 할 최소 문자 수를 반환
+'''
 ## https://leetcode.com/problems/minimum-deletions-to-make-character-frequencies-unique/
 from collections import Counter
 
@@ -112,7 +119,10 @@ class Solution:
             used.add(f)            # 0도 포함 (0은 무시해도 중복 안 생김)
 
         return deletions
-
+'''
+펠린드롬 2 
+- 문자 하나 제거 가능
+'''
 ## https://leetcode.com/problems/valid-palindrome-ii/description/
 class Solution:
     def validPalindrome(self, s: str) -> bool:
@@ -134,7 +144,9 @@ class Solution:
                 return is_pal(l + 1, r) or is_pal(l, r - 1)
         return True
 
-
+'''
+3연속 제거하기
+'''
 ## https://leetcode.com/problems/delete-characters-to-make-fancy-string/description/
 class Solution:
     def makeFancyString(self, s: str) -> str:
@@ -145,7 +157,9 @@ class Solution:
             res.append(ch)
         return ''.join(res)
 
-
+'''
+패턴 교환
+'''
 ## https://leetcode.com/problems/minimum-changes-to-make-alternating-binary-string/description
 class Solution:
     def minOperations(self, s: str) -> int:
@@ -163,6 +177,10 @@ class Solution:
         return min(mismatchA, mismatchB)
 
 
+
+'''
+리어렌지 
+'''
 ## https://leetcode.com/problems/reorganize-string/description/?utm_source=chatgpt.com
 from collections import Counter
 import heapq
