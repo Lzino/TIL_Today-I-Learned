@@ -97,8 +97,111 @@ Output:
 힌트 : 맞춤 자료구조 설계 + DP/그리디 + 조건 만족 최소수정
 '''
 ## https://leetcode.com/problems/minimum-deletions-to-make-character-frequencies-unique/
+from collections import Counter
+
+class Solution:
+    def minDeletions(self, s: str) -> int:
+        freq = Counter(s)          # 각 문자의 빈도수 계산
+        used = set()               # 이미 사용된 빈도값 집합
+        deletions = 0              # 삭제 횟수 누적
+
+        for f in freq.values():    # 문자 자체는 중요하지 않고 빈도만 필요
+            while f > 0 and f in used:
+                f -= 1             # 빈도 1 감소 = 문자 1개 삭제
+                deletions += 1
+            used.add(f)            # 0도 포함 (0은 무시해도 중복 안 생김)
+
+        return deletions
+
 ## https://leetcode.com/problems/valid-palindrome-ii/description/
+class Solution:
+    def validPalindrome(self, s: str) -> bool:
+        def is_pal(i: int, j: int) -> bool:
+            while i < j:
+                if s[i] != s[j]:
+                    return False
+                i += 1
+                j -= 1
+            return True
+
+        l, r = 0, len(s) - 1
+        while l < r:
+            if s[l] == s[r]:
+                l += 1
+                r -= 1
+            else:
+                # 하나 지워보기: 왼쪽 삭제 vs 오른쪽 삭제
+                return is_pal(l + 1, r) or is_pal(l, r - 1)
+        return True
+
+
 ## https://leetcode.com/problems/delete-characters-to-make-fancy-string/description/
-## https://leetcode.com/problems/minimum-changes-to-make-alternating-binary-string/description/
+class Solution:
+    def makeFancyString(self, s: str) -> str:
+        res = []
+        for ch in s:
+            if len(res) >= 2 and res[-1] == res[-2] == ch:
+                continue      # 3연속이면 건너뜀
+            res.append(ch)
+        return ''.join(res)
+
+
+## https://leetcode.com/problems/minimum-changes-to-make-alternating-binary-string/description
+class Solution:
+    def minOperations(self, s: str) -> int:
+        mismatchA = mismatchB = 0
+        
+        for i, ch in enumerate(s):
+            expectedA = '0' if i % 2 == 0 else '1'  # "0101..." 패턴
+            expectedB = '1' if i % 2 == 0 else '0'  # "1010..." 패턴
+            
+            if ch != expectedA:
+                mismatchA += 1
+            if ch != expectedB:
+                mismatchB += 1
+        
+        return min(mismatchA, mismatchB)
+
+
 ## https://leetcode.com/problems/reorganize-string/description/?utm_source=chatgpt.com
+from collections import Counter
+import heapq
+
+class Solution:
+    def reorganizeString(self, s: str) -> str:
+        n = len(s)
+        freq = Counter(s)
+
+        # ① 불가능 조건
+        if max(freq.values()) > (n + 1) // 2:
+            return ""
+
+        # ② max-heap 준비 (파이썬은 min-heap → 빈도에 음수 부호)
+        heap = [(-cnt, ch) for ch, cnt in freq.items()]
+        heapq.heapify(heap)
+
+        res = []
+
+        # ③ 두 문자씩 꺼내기
+        while len(heap) >= 2:
+            cnt1, ch1 = heapq.heappop(heap)   # 가장 많은 문자
+            cnt2, ch2 = heapq.heappop(heap)   # 두 번째
+
+            res.extend([ch1, ch2])
+
+            # 사용 후 남으면 재삽입 (cnt는 음수임에 주의)
+            if cnt1 + 1:          # cnt1은 음수 → +1은 빈도 1 감소
+                heapq.heappush(heap, (cnt1 + 1, ch1))
+            if cnt2 + 1:
+                heapq.heappush(heap, (cnt2 + 1, ch2))
+
+        # ④ 힙에 1개 남은 경우 처리
+        if heap:
+            cnt, ch = heap[0]     # (-1, 'x') 형태
+            if res and res[-1] == ch:
+                return ""         # 직전 문자와 충돌 → 불가능
+            res.append(ch)
+
+        return "".join(res)
+
 
