@@ -3,15 +3,28 @@
 문제
 정수 N(1 ≤ N ≤ 1 000)과 정수 배열 A(1..N)가 주어진다.
 서로 다른 두 인덱스 i < j에 대해 |A[i] − A[j]| 가 소수(prime)이 되는 쌍의 개수를 구하라.
+힌트 : 에라토스테네스의 체
+'''
 
+# 단순 소수 구하기
 def is_prime(n):
     if n <= 1: return False
     for i in range(2, int(n**0.5)+1):
         if n % i == 0: return False
     return True
+    
+#  에라토스테네스의 체
+n=1000
+a = [False,False] + [True]*(n-1)
+primes=[]
 
-힌트 : 에라토스테네스의 체
-'''
+def Sieve(n,a,primes):
+    for i in range(2,n+1):
+      if a[i]:
+        primes.append(i)
+        for j in range(2*i, n+1, i):
+            a[j] = False
+    return(primes)
 
 def count_prime_pairs(nums):
     n = len(nums)
