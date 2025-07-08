@@ -84,50 +84,50 @@ Output:
 힌트 : 맞춤 자료구조 설계 + DP/그리디 + 조건 만족 최소수정
 '''
 
-import sys
 from collections import Counter
 
-ALPH = [chr(ord('A')+i) for i in range(26)]
-
-def min_flips(s: str, K: int) -> int:
+def min_flips(s, K):
     cnt = Counter()
-    prev = None
+    prev = ''
     flips = 0
+    result = []
 
-    for i, ch in enumerate(s):
-        # R1: 인접 중복 방지
-        if ch == prev:
-            # 바꿀 후보 찾기
-            for repl in ALPH:
+    for ch in s:
+        cur = ch
+
+        # 조건 1: 인접 중복 방지
+        if cur == prev:
+            for repl in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
                 if repl != prev:
-                    # 가정: 아직 cnt에 반영 안 된 상태
-                    test_max = max(cnt.values(), default=0, initial=0)
-                    test_min = min(cnt.values(), default=0, initial=0)
-                    # repl 카운트 +1 후 불균형?
-                    test_max = max(test_max, cnt[repl]+1)
-                    test_min = min(test_min, cnt[repl]+1) if cnt else 0
-                    if test_max - test_min <= K:
-                        ch = repl
-                        flips += 1
-                        break
-
-        # 카운터 반영
-        cnt[ch] += 1
-        prev = ch
-
-        # R2: 접두사 균형 검사
-        if cnt and (max(cnt.values()) - min(cnt.values()) > K):
-            # 방금 문자를 다른 문자로 교체
-            cnt[ch] -= 1  # rollback
-            for repl in ALPH:
-                if repl != prev and (max(cnt.values() | {cnt[repl]+1}) - min((v for v in cnt.values() if v) | {cnt[repl]+1})) <= K:
-                    cnt[repl] += 1
-                    prev = repl
+                    cur = repl
                     flips += 1
                     break
+
+        # 문자 추가
+        cnt[cur] += 1
+        result.append(cur)
+
+        # 조건 2: 접두사 불균형 검사
+        max_cnt = max(cnt.values())
+        min_cnt = min(cnt.values())
+        if max_cnt - min_cnt > K:
+            cnt[cur] -= 1  # 빼고
+            for repl in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
+                if repl != prev:
+                    cnt[repl] += 1
+                    flips += 1
+                    result[-1] = repl
+                    cur = repl
+                    break
+
+        prev = cur  # 다음 루프를 위해 갱신
+
     return flips
 
+# 실행 예시
 if __name__ == "__main__":
+    import sys
     S = sys.stdin.readline().strip()
     K = int(sys.stdin.readline())
     print(min_flips(S, K))
+
