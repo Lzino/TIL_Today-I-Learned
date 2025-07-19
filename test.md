@@ -1,14 +1,12 @@
 ```json
-1. 
-
 
 {
   "Effect": "Allow",
   "Action": [
-    "ecr:GetAuthorizationToken",
-    "ecr:BatchCheckLayerAvailability",
-    "ecr:GetDownloadUrlForLayer",
-    "ecr:BatchGetImage"
+    "s3:GetObject", "s3:PutObject", "s3:ListBucket"
   ],
-  "Resource": "arn:aws:ecr:region:accountB:repository/repo-name"
+  "Resource": [
+    "arn:aws:s3:::bucket-name",
+    "arn:aws:s3:::bucket-name/*"
+  ]
 }
