@@ -22,7 +22,19 @@
     "s3:GetObject", "s3:PutObject", "s3:ListBucket"
   ],
   "Resource": [
-    "arn:aws:s3:::TMAP_REPO",
-    "arn:aws:s3:::TMAP_REPO/*"
+    "arn:aws:s3:::tmap_bucket",
+    "arn:aws:s3:::tmap_bucket/*"
   ]
+}
+
+
+{
+  "Effect": "Allow",
+  "Action": [
+    "ecr:GetAuthorizationToken",
+    "ecr:BatchCheckLayerAvailability",
+    "ecr:GetDownloadUrlForLayer",
+    "ecr:BatchGetImage"
+  ],
+  "Resource": "arn:aws:ecr:region:accountB:repository/tmap_repo"
 }
