@@ -22,7 +22,7 @@
     "s3:GetObject", "s3:PutObject", "s3:ListBucket"
   ],
   "Resource": [
-    "arn:aws:s3:::bucket-name",
-    "arn:aws:s3:::bucket-name/*"
+    "arn:aws:s3:::TMAP_REPO",
+    "arn:aws:s3:::TMAP_REPO/*"
   ]
 }
