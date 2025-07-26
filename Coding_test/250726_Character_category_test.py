@@ -31,7 +31,6 @@ def solution(survey, choice):
 	for a,b in [('R','T'),('C','F'),('J','M'),('A','N')]:
 		if scores[a] >= score[b]:
 			result += a
-
 		else :
 			result += b
 	return result 
