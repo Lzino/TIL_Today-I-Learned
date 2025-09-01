@@ -2,45 +2,53 @@
 from collections import deque
 
 def solution(queue1, queue2):
-	q1 = deque(queue1)
-	q2 = deque(queue2)
+    # Python 리스트를 큐처럼 O(1)로 pop/append 하려면 deque가 적합
+    q1 = deque(queue1)
+    q2 = deque(queue2)
 
-	s1, s2 = sum(q1), sum(q2)
-	total = s1 + s2
+    # 각 큐의 합과 전체 합
+    s1, s2 = sum(q1), sum(q2)
+    total = s1 + s2
 
-	# 두 수의 합이 홀수 일 때 같은 값이 안나옴 
-	if total % 2 != 0:
-		return -1
+    # 전체 합이 홀수면 두 큐를 같은 합으로 만드는 것이 원천적으로 불가능
+    if total % 2 != 0:
+        return -1
 
-	# 평균으로 타겟 만들기
-	target = total // 2
-	# 최악 가정 (실험상 3번)
-	max_count = len(queue1) * 3
+    # 두 큐가 도달해야 할 목표 합 (동일해야 하는 합)
+    target = total // 2
 
-	count = 0 
+    # 안전장치: 무한 루프 방지용 최대 연산 횟수(상한)
+    # 2번 돌리면 TC에 걸려서 3번 돌리는걸로 최적화 
+    max_count = len(queue1) * 3
 
-	while count <= max_count:
-		if s1 == target:
-			return count
+    count = 0  # 현재까지 수행한 작업(= pop 1회 + insert 1회)의 횟수
 
-		# q1이 평균보다 큰 경우
-		elif s1 > target :
-			num = q1.popleft() # 맨 앞의 원소 POP 
-			s1 -= num # 큐 1 합에서 빼기
-			q2.append(num) # 큐 2 뒤에 추가
-			s2 += num # 큐 2 합에 추가 
+    # 핵심 아이디어:
+    # s1(큐1의 합)이 target보다 크면, 큐1에서 pop하여 큐2로 옮겨 s1을 줄임
+    # s1이 target보다 작으면, 큐2에서 pop하여 큐1로 옮겨 s1을 늘림
+    # s1 == target이 되는 순간이 정답(가장 먼저 도달하는 순간이 최소 횟수)
+    while count <= max_count:
+        if s1 == target:
+            return count
 
-		# q2가 평균보다 큰 경우
-		else :
-			num = q2.popleft()
-			s2 -= num
-			q1.append(num)
-			s1 += num
+        elif s1 > target:
+            # 큐1의 합이 너무 크므로, 큐1의 맨 앞을 꺼내 큐2 뒤에 붙인다
+            num = q1.popleft()  # pop
+            s1 -= num           # s1 감소
+            q2.append(num)      # insert
+            s2 += num           # s2 증가
 
-		count += 1
-	return -1
+        else:  # s1 < target
+            # 큐1의 합이 작으므로, 큐2의 맨 앞을 꺼내 큐1 뒤에 붙인다
+            num = q2.popleft()  # pop
+            s2 -= num           # s2 감소
+            q1.append(num)      # insert
+            s1 += num           # s1 증가
 
+        count += 1  # 작업 1회 완료(pop+insert를 한 번으로 센다)
 
+    # 상한 횟수 내에 목표 합을 만들지 못했다면 불가능 판정
+    return -1
 
 '''
 [C ++ 버전]
