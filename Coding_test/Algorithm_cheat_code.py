@@ -9,20 +9,33 @@
 # ]  # 1=이동 가능, 0=이동 불가
 # bfs_grid(grid, 0, 0) → 시작 (0,0)에서 각 칸까지의 최단거리 행렬
 from collections import deque
-dy, dx = [1,-1,0,0], [0,0,1,-1]
+
+# 4방향 이동(아래, 위, 오른쪽, 왼쪽)
+dy, dx = [1, -1, 0, 0], [0, 0, 1, -1]
 
 def bfs_grid(grid, sy, sx):
-    n, m = len(grid), len(grid[0])              # 세로, 가로 크기
-    dist = [[-1]*m for _ in range(n)]           # 방문 여부 + 거리 저장
-    q = deque([(sy, sx)])                       # 시작 좌표
-    dist[sy][sx] = 0
+    """
+    grid : 2차원 리스트(행렬). 이동 가능이면 1(True), 벽/불가면 0(False)
+    sy,sx: 시작 좌표 (row, col)
+    return: 시작점에서 각 칸까지의 '최단 거리'를 담은 2차원 리스트
+            도달 불가 칸은 -1
+    """
+    n, m = len(grid), len(grid[0])          # n=행(세로 크기), m=열(가로 크기)
+    dist = [[-1]*m for _ in range(n)]       # 방문표시 겸 거리 저장(-1이면 미방문/도달불가)
+    q = deque([(sy, sx)])                   # BFS용 큐에 시작점 삽입
+    dist[sy][sx] = 0                        # 시작점까지의 거리는 0
+
+    # 큐가 빌 때까지 반복 (BFS: 가까운 칸부터 레벨 순서대로 확장)
     while q:
-        y, x = q.popleft()
-        for i in range(4):                      # 상하좌우 이동
-            ny, nx = y+dy[i], x+dx[i]
-            if 0<=ny<n and 0<=nx<m and grid[ny][nx] and dist[ny][nx]==-1:
-                dist[ny][nx] = dist[y][x] + 1
-                q.append((ny, nx))
+        y, x = q.popleft()                  # 현재 칸을 꺼냄(FIFO)
+        # 4방향 이웃 칸을 확인
+        for i in range(4):
+            ny, nx = y + dy[i], x + dx[i]
+            # 1) 범위 안  2) 통로(이동 가능)  3) 아직 방문 안 함
+            if 0 <= ny < n and 0 <= nx < m and grid[ny][nx] and dist[ny][nx] == -1:
+                dist[ny][nx] = dist[y][x] + 1   # 최단거리 갱신(부모거리 + 1)
+                q.append((ny, nx))              # 다음 확장을 위해 큐에 추가
+
     return dist
 
 
