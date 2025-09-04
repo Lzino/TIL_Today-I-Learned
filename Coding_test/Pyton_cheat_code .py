@@ -28,6 +28,7 @@ for i in range(len(word)):
     if word == word[::-1]: # 거꾸로 해보기
         print(1)
 
+## 기타 방법 : 리스트의 pop(0) vs pop(), deque의 popleft() vs pop()
 
 
 # 정규 표현식
