@@ -44,6 +44,10 @@ temp = ''.join(list)
 
 '''
 에라토스테네스의 체 (소수 구하기)
+- 일반적인 소수 구하기 : x가 해당 수로 나누어떨어진다면
+    if x % i == 0:
+        return False # 소수가 아님
+    else : True # 소수
 '''
 import math
 n = 1000
@@ -56,6 +60,8 @@ for i in range(2, math.sqrt(n) + 1):
         while i * j <= n :
             array[i*j] = False # i를 제외한 배수들 다 지우기 
             j += 1
+
+
             
 # 모든 소수 출력
 for i in range(2, n + 1):
