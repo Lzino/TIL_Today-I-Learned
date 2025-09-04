@@ -41,12 +41,54 @@ temp = re.split('[^0-9]', list)
 ## ['a', 'b', 'c'] →  'abc'
 temp = ''.join(list)
 
-# 에라토스테네스의 체 (소수 구하기)
 
-# 누적합 만들기
+'''
+에라토스테네스의 체 (소수 구하기)
+'''
+import math
+n = 1000
+array = [True for i in range (n +1 )]
+
+# 제곱근까지만 소수 알아보기
+for i in range(2, math.sqrt(n) + 1):
+    if array[i] == True :
+        j = 2 # 2번째 배수부터
+        while i * j <= n :
+            array[i*j] = False # i를 제외한 배수들 다 지우기 
+            j += 1
+            
+# 모든 소수 출력
+for i in range(2, n + 1):
+    if array[i]:
+        print(i, end=' ')
 
 
-# SQL 주요 함수 
+'''
+누적합(prifix_sum) 만들기
+'''
+
+# 전체 데이터 선언
+data = [10, 20, 30, 40, 50]
+
+
+# 더해줄 변수와 누적합 리스트 선언  
+sum_value = 0
+prfix_sum= [0]
+
+# 더할때마다 리스트 추가. DP땐 defaultdict 사 
+for i in data:
+    sum_value += i 
+    prfix_sum.append(sum_value)
+
+# 인덱스 기준 2번에서 3번사이의 합이 필요할때
+left = 2
+right = 3
+
+print(prfix_sum[right] - prfix_sum[left-1])
+
+'''
+SQL 주요 함수 
+'''
 ## 추출
 ROW_NUMBER() OVER (PARTITION BY ■ ORDER BY ■ DESC) AS RN
 ## 날짜(DATE) 타입 변환
