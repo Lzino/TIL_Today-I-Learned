@@ -215,22 +215,29 @@ for y in range(1, n+1):
             dp[y][x] = dp[y-1][x] + dp[y][x-1]
 
 
-# 배낭 (0/1 Knapsack)
-# 예시: N=5, weight=[2,3], value=[4,5]
-# dp[w] : 배낭 용량이 w일 때 얻을 수 있는 최대 가치
 def knapsack_01(N, weight, value):
+    """
+    0/1 Knapsack (아이템은 각 0개 또는 1개만 선택 가능)
+    N: 배낭 용량 (int)
+    weight, value: 같은 길이의 리스트. weight[i]는 i번째 아이템 무게(>=1), value[i]는 가치.
+
+    반환: 용량 N에서 얻을 수 있는 최대 가치 (int)
+    복잡도: 시간 O(nN), 공간 O(N)
+    """
+    assert len(weight) == len(value)
     n = len(weight)
-    dp = [0] * (N + 1)
+    dp = [0] * (N + 1)  # dp[w]: 용량 w에서의 최대 가치
 
     for i in range(n):
         item_weight = weight[i]
         item_value = value[i]
-        # 뒤에서 앞으로 순회 (같은 아이템 중복 방지)
+        # 역순 순회: 같은 아이템을 한 번만 쓰도록 보장 (0/1 조건)
         for capacity in range(N, item_weight - 1, -1):
-            without_item = dp[capacity]                           # 안 넣는 경우
-            with_item = dp[capacity - item_weight] + item_value   # 넣는 경우
-            dp[capacity] = max(without_item, with_item)
+            # 안 담는 경우 vs 담는 경우(이전 상태 dp[capacity - item_weight]에서 가치 추가)
+            dp[capacity] = max(dp[capacity],
+                               dp[capacity - item_weight] + item_value)
     return dp[N]
+
 
 
 
