@@ -59,10 +59,7 @@ for i in range(2, math.sqrt(n) + 1):
         j = 2 # 2번째 배수부터
         while i * j <= n :
             array[i*j] = False # i를 제외한 배수들 다 지우기 
-            j += 1
-
-
-            
+            j += 1            
 # 모든 소수 출력
 for i in range(2, n + 1):
     if array[i]:
