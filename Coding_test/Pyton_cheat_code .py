@@ -98,3 +98,19 @@ ROW_NUMBER() OVER (PARTITION BY ■ ORDER BY ■ DESC) AS RN
 DATE_FORMAT(■,'%Y-%m-%d'), CAST( AS DATE), DATE()
 ## IF문 대신
 CASE WHEN ■ THEN ■ ELSE END 
+## WITH
+WITH ADULT AS 
+(SELECT gender
+         , name
+         , age
+FROM MEMBER
+WHERE age > 19
+)
+SELECT gender
+     , name
+     , age
+  FROM ADULT
+
+
+
+
