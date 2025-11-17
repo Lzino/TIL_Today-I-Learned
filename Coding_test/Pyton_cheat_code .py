@@ -111,6 +111,45 @@ SELECT gender
      , age
   FROM ADULT
 
+# 카데인 (연속합 최대)
+# 예시: arr=[-2,1,-3,4,-1,2,1] → max_sum=6
+current_sum = arr[0]
+max_sum = arr[0]
+for num in arr[1:]:
+    current_sum = max(num, current_sum + num)
+    max_sum = max(max_sum, current_sum)
+
+'''
+첫번째 인덱스부터 특정 인덱스까지의 구간의 합을 미리 구하는 방
+O(1)에 구간길이 구할수있음
+예: arr = [1, 2, 3, 4]
+구간합(1 ~ 3) → prefix[4] - prefix[1]
+0~r → prefix[r+1]
+q~r → prefix[r+1] - prefix[q]
+'''
+# 누적합 (Prefix Sum)
+# 예시: arr=[1,2,3,4], prefix=[0,1,3,6,10]
+# 구간합(1~3) = prefix[4] - prefix[1] = 9
+prefix = [0]*(n+1)
+for i in range(1, n+1):
+    prefix[i] = prefix[i-1] + arr[i-1]
+
+
+# 이진 탐색
+def binary_search(arr, target):
+    left, right = 0, len(arr) - 1
+    
+    while left <= right:  # 탐색 구간이 남아있는 동안
+        mid = (left + right) // 2
+        
+        if arr[mid] == target:
+            return mid  # 값 찾음 → 인덱스 반환
+        elif arr[mid] < target:
+            left = mid + 1  # 오른쪽으로 범위 이동
+        else:
+            right = mid - 1  # 왼쪽으로 범위 이동
+    
+    return -1  # 못 찾으면 -1
 
 
 
